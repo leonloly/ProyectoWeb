@@ -13,13 +13,14 @@ public class JDBCMySQL {
     private String password = "root";
     private String puerto = "3306";
     private String database = "biblioteca";
-    private String host = "localhost";
+    private String host = "127.0.0.1";
     private Connection conexion;
 
     public JDBCMySQL() {
         String url = "jdbc:mysql://" + host + ":" + puerto + "/" + database + "?useSSL=false&serverTimezone=America/El_Salvador";
         try {
-            conexion = DriverManager.getConnection(url, user, password);
+            Class.forName("com.mysql.jdbc.Driver"); 
+            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/biblioteca", "root", "root");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
