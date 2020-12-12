@@ -20,9 +20,11 @@
     <b-button @click="save()" variant="success"   >primary</b-button>
 
     <v-table :fields="table.collums" :data="table.data" >
+
         <template slot="codigoPais" slot-scope="{row}" > {{row.codigoPais.nombre}}</template>
+
         <template #options="{row}"> 
-            <b-button @click="form={nombre:row.nombre,pais:row.codigoPais.codigo,codigo:row.codigo}"  variant="success" size="sm">
+            <b-button @click="setUpdate(row)"  variant="success" size="sm">
                 <span class="fas fa-pencil-alt"></span> Editar
             </b-button>
             <b-button variant="danger" size="sm">
@@ -53,6 +55,13 @@
                     }
                 }),
             methods: {
+                setUpdate(row) {
+                    this.form = {
+                        nombre: row.nombre,
+                        pais: row.codigoPais.codigo,
+                        codigo: row.codigo
+                    }
+                },
                 async getAutores() {
                     const {status, data} = await httpClient.get("/Proyecto2/autores-controller", this.form);
                     this.table.data = data;

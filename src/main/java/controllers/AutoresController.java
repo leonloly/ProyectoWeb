@@ -29,7 +29,7 @@ public class AutoresController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             Map resMap = new HashMap<String, Object>();
             switch (request.getMethod()) {
                 case "GET":
@@ -38,8 +38,17 @@ public class AutoresController extends HttpServlet {
                 case "POST":
                     out.print(this.save(request, resMap));
                     break;
+                case "DELETE":
+                    out.print(this.delete(request, resMap));
+                    break;
             }
         }
+    }
+
+    private String delete(HttpServletRequest r, Map response) {
+         response.put("id", r.getParameter("codigo"));
+          response.put("message", "Procesado con exito");
+        return new Gson().toJson(response);
     }
 
     private String list(Map response) {

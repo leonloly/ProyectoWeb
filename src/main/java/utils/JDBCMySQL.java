@@ -20,7 +20,8 @@ public class JDBCMySQL {
         String url = "jdbc:mysql://" + host + ":" + puerto + "/" + database + "?useSSL=false&serverTimezone=America/El_Salvador";
         try {
             Class.forName("com.mysql.jdbc.Driver"); 
-            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/biblioteca", "root", "root");
+          //  conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/biblioteca", "root", "root");
+            conexion = DriverManager.getConnection(url, user, password);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
