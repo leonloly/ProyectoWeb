@@ -10,13 +10,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import models.Autores;
-import models.Paises;
+import models.Estantes;
+import models.Sucursales;
 import utils.Validation;
 
-@WebServlet(name = "AutoresController", urlPatterns = {"/autores-controller"})
-public class AutoresController extends HttpServlet {
+/**
+  * @author MariaLeon
+ */
 
+@WebServlet(name = "EstantesController", urlPatterns = {"/Estantes-Controller"})
+public class EstantesController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
@@ -43,7 +46,7 @@ public class AutoresController extends HttpServlet {
     }
 
     private String list(Map response) {
-        Autores a = new Autores();
+        Estantes a = new Estantes();
         response.put("data", a.list());
         return new Gson().toJson(response);
     }
@@ -51,12 +54,12 @@ public class AutoresController extends HttpServlet {
     private String save(HttpServletRequest r, Map response) throws IOException {
         Map params = Validation.requestMap(r.getReader());
         if (!params.isEmpty()) {
-            Autores p = new Autores();
+            Estantes p = new Estantes();
             if (params.get("codigo") != null) {
                 p.setCodigo((int) Double.parseDouble(params.get("codigo").toString()));
             }
-            p.setNombre(params.get("nombre").toString());
-            p.setCodigoPais(new Paises((int) Double.parseDouble(params.get("pais").toString())));
+            p.setCajones(Integer.parseInt(params.get("cajones").toString()));
+            p.setCodigoSucuarsal(new Sucursales((int) Double.parseDouble(params.get("sucursal").toString())));
             if (p.save()) {
                 response.put("message", "Procesado con exito");
             } else {
@@ -109,5 +112,4 @@ public class AutoresController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

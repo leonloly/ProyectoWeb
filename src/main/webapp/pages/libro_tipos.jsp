@@ -1,43 +1,92 @@
 <%@ include file = "../template/header.jsp" %>
 <div class="card-header">
-    Libro tipos
+    Libro Tipos
 </div>
-<div class="card-body">
-
-    <form>
-
-        <div class="row">
-            <div class="form-group col-6">
-                <label for="exampleFormControlInput1">Nombre</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="__">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary"> Guardar</button>
-        <button type="reset" class="btn btn-info">Limpiar</button>
-
-    </form>
+<div id="vue-app" class="card-body">
 
 
+    <b-form-group label="Nombre del tipo: *" label-for="nombre">
+        <b-form-input id="name"  v-model="form.nombre"></b-form-input>
+        <b-form-invalid-feedback>Tipo de libro</b-form-invalid-feedback>
+    </b-form-group>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Codigo</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Libro</td>
-                <td>
-                     <button type="submit" class="btn btn-info"> Editar</button>
-        <button type="reset" class="btn btn-danger">Borrar</button> 
-                    
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <b-button @click="save()" variant="success" >Guardar</b-button>
+
+    <v-table :fields="table.collums" :data="table.data" >
+
+        <template #options="{row}"> 
+            
+            <b-button @click="setUpdate(row)"  variant="success" size="sm">
+                <span class="fas fa-pencil-alt"></span> Editar
+            </b-button>
+            
+            <b-button variant="danger" size="sm">
+                <span class="fas fa-trash-alt"></span> Borrar
+            </b-button>
+            
+        </template>
+    </v-table>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        new Vue({
+            el: "#vue-app",
+            data: () => ({
+                    selects: {
+                    },
+                    form: {},
+                    table: {
+                        collums: [
+                            {key: 'codigo', label: 'Codigo', sortable: true},
+                            {key: 'nombre', label: 'Nombre', sortable: true},
+                            {key: 'options', label: 'Opciones', sortable: false}
+                        ],
+                        data: []
+                    }
+                }),
+            methods: {
+                setUpdate(row) {
+                    this.form = {
+                        nombre: row.nombre,
+                        codigo: row.codigo
+                    };
+                },
+                async getLibroTiposController() {
+                    const {status, data} = await httpClient.get("/Proyecto2/LibroTiposController", this.form);
+                    this.table.data = data;
+                },
+                async save() {
+                    if (this.valid()) {
+                        const {status} = await httpClient.post("/Proyecto2/LibroTiposController", this.form);
+                        console.log(status);
+                        if (status) {
+                            this.getLibroTiposController();
+                            this.form = {};
+                        }
+                    }
+                },
+                valid() {
+                    if (!this.form.nombre)
+                        $("#name").addClass('is-invalid');
+
+                    $(".is-invalid").change(function () {
+                        $(this).removeClass('is-invalid');
+                    });
+
+                    if ($(".is-invalid").length > 0) {
+                        let firstInvalid = $($(".is-invalid")[0]);
+                        firstInvalid.focusWithoutScrolling();
+                        return false;
+                    }
+                    ;
+                    return true;
+                }
+            }, mounted() {
+                this.getLibroTiposController();
+            }
+        });
+    });
+</script>
+
 <%@ include file = "../template/footer.jsp" %>

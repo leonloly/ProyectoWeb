@@ -10,14 +10,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import models.Autores;
-import models.Paises;
+import models.Proveedores;
 import utils.Validation;
 
-@WebServlet(name = "AutoresController", urlPatterns = {"/autores-controller"})
-public class AutoresController extends HttpServlet {
+/**
+ * @author MariaLeon
+ */
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+@WebServlet(name = "proveedoresController", urlPatterns = {"/Proveedores-controller"})
+public class ProveedoresController extends HttpServlet{
+    
+        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -37,26 +40,27 @@ public class AutoresController extends HttpServlet {
     }
 
     private String delete(HttpServletRequest r, Map response) {
-         response.put("id", r.getParameter("codigo"));
-          response.put("message", "Procesado con exito");
+        response.put("id", r.getParameter("codigo"));
+        response.put("message", "Procesado con exito");
         return new Gson().toJson(response);
     }
 
     private String list(Map response) {
-        Autores a = new Autores();
-        response.put("data", a.list());
+        Proveedores p = new Proveedores();
+        response.put("data", p.List());
         return new Gson().toJson(response);
     }
 
     private String save(HttpServletRequest r, Map response) throws IOException {
         Map params = Validation.requestMap(r.getReader());
         if (!params.isEmpty()) {
-            Autores p = new Autores();
+            Proveedores p = new Proveedores();
             if (params.get("codigo") != null) {
                 p.setCodigo((int) Double.parseDouble(params.get("codigo").toString()));
             }
             p.setNombre(params.get("nombre").toString());
-            p.setCodigoPais(new Paises((int) Double.parseDouble(params.get("pais").toString())));
+            p.setTelefono(Integer.parseInt(params.get("telefono").toString()));
+            p.setCorreo(params.get("correo").toString());
             if (p.save()) {
                 response.put("message", "Procesado con exito");
             } else {
@@ -78,7 +82,8 @@ public class AutoresController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -91,12 +96,8 @@ public class AutoresController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -109,5 +110,4 @@ public class AutoresController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

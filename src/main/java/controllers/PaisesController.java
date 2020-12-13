@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controllers;
 
 import com.google.gson.Gson;
@@ -24,7 +19,7 @@ public class PaisesController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             Map resMap = new HashMap<String, Object>();
             switch (request.getMethod()) {
                 case "GET":
@@ -33,8 +28,17 @@ public class PaisesController extends HttpServlet {
                 case "POST":
                     out.print(this.save(request, resMap));
                     break;
+                case "DELETE":
+                    out.print(this.delete(request, resMap));
+                    break;
             }
         }
+    }
+
+    private String delete(HttpServletRequest r, Map response) {
+        response.put("id", r.getParameter("codigo"));
+        response.put("message", "Procesado con exito");
+        return new Gson().toJson(response);
     }
 
     private String list(Map response) {
@@ -44,7 +48,21 @@ public class PaisesController extends HttpServlet {
     }
 
     private String save(HttpServletRequest r, Map response) throws IOException {
-       
+        Map params = Validation.requestMap(r.getReader());
+        if (!params.isEmpty()) {
+            Paises p = new Paises();
+            if (params.get("codigo") != null) {
+                p.setCodigo((int) Double.parseDouble(params.get("codigo").toString()));
+            }
+            p.setNombre(params.get("nombre").toString());
+            if (p.save()) {
+                response.put("message", "Procesado con exito");
+            } else {
+                response.put("message", "Error en el proceso");
+            }
+        } else {
+            response.put("message", "sin parametros recibidos");
+        }
         return new Gson().toJson(response);
     }
 

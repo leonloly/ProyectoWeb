@@ -10,14 +10,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import models.Autores;
-import models.Paises;
+import models.UsuarioPerfiles;
+import models.Usuarios;
 import utils.Validation;
 
-@WebServlet(name = "AutoresController", urlPatterns = {"/autores-controller"})
-public class AutoresController extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+/**
+ * @author MariaLeon
+ */
+@WebServlet(name = "UsuarioController", urlPatterns = {"/UsuarioController"})
+public class UsuarioController extends HttpServlet {
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json; charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -43,7 +45,7 @@ public class AutoresController extends HttpServlet {
     }
 
     private String list(Map response) {
-        Autores a = new Autores();
+        Usuarios a = new Usuarios();
         response.put("data", a.list());
         return new Gson().toJson(response);
     }
@@ -51,12 +53,15 @@ public class AutoresController extends HttpServlet {
     private String save(HttpServletRequest r, Map response) throws IOException {
         Map params = Validation.requestMap(r.getReader());
         if (!params.isEmpty()) {
-            Autores p = new Autores();
+            Usuarios p = new Usuarios();
             if (params.get("codigo") != null) {
                 p.setCodigo((int) Double.parseDouble(params.get("codigo").toString()));
             }
             p.setNombre(params.get("nombre").toString());
-            p.setCodigoPais(new Paises((int) Double.parseDouble(params.get("pais").toString())));
+            p.setApellido(params.get("apellido").toString());
+            p.setCarnet(params.get("carnet").toString());
+            p.setPassworduser(params.get("passworduser").toString());
+            p.setCodigoPerfil(new UsuarioPerfiles((int) Double.parseDouble(params.get("perfil").toString())));
             if (p.save()) {
                 response.put("message", "Procesado con exito");
             } else {
@@ -78,7 +83,8 @@ public class AutoresController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -91,12 +97,8 @@ public class AutoresController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

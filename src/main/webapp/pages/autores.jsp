@@ -1,6 +1,6 @@
 <%@ include file = "../template/header.jsp" %>
 <div class="card-header">
-    Libros
+    Autores
 </div>
 <div id="vue-app" class="card-body">
 
@@ -17,7 +17,8 @@
         </b-form-select>
         <b-form-invalid-feedback>Seleccionar Pais</b-form-invalid-feedback>
     </b-form-group>
-    <b-button @click="save()" variant="success"   >primary</b-button>
+    
+    <b-button @click="save()" variant="success"   >Guardar</b-button>
 
     <v-table :fields="table.collums" :data="table.data" >
 
